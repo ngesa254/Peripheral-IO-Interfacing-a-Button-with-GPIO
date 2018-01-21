@@ -32,4 +32,15 @@ public class MainActivity extends Activity {
         }
 
     }
+
+    //Close Button GPIO connection.
+    @Override
+    protected void onDestroy() {
+        try {
+            mButtonGio.close();
+        }catch (IOException e){
+            throw new IllegalStateException (mButtonGio+"error closing the bus", e);
+        }
+        super.onDestroy();
+    }
 }
