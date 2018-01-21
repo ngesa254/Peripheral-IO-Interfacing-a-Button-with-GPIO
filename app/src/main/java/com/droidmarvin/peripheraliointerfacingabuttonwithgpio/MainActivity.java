@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
+import com.google.android.things.pio.GpioCallback;
 import com.google.android.things.pio.PeripheralManagerService;
 
 import java.io.IOException;
@@ -30,11 +31,28 @@ public class MainActivity extends Activity {
             // Configure Button as an input && Enable edge trigger events
             mButtonGio.setDirection(Gpio.DIRECTION_IN);
             mButtonGio.setEdgeTriggerType(Gpio.ACTIVE_LOW);
+            //register an event callback
+            mButtonGio.registerGpioCallback(mButtonCallback);
         }catch (IOException e){
             throw new IllegalStateException(mButtonGio +"error opening the button",e);
         }
 
     }
+    // register an event callback
+    private GpioCallback mButtonCallback = new GpioCallback() {
+        @Override
+        public boolean onGpioEdge(Gpio gpio) {
+            Log.i(TAG, "button pressed");
+            //Return true to keep callback active.
+            return true;
+
+        }
+
+        @Override
+        public void onGpioError(Gpio gpio, int error) {
+            super.onGpioError(gpio, error);
+        }
+    };
 
     //Close Button GPIO connection.
     @Override
@@ -42,7 +60,7 @@ public class MainActivity extends Activity {
         try {
             mButtonGio.close();
         }catch (IOException e){
-            throw new IllegalStateException (mButtonGio+"error closing the bus", e);
+            throw new IllegalStateException (mButtonGio+ "error closing the bus", e);
         }
         super.onDestroy();
     }
