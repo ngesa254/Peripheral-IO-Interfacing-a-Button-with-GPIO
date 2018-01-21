@@ -24,9 +24,12 @@ public class MainActivity extends Activity {
         PeripheralManagerService service = new PeripheralManagerService();
         //Log.d (TAG, "Available GPIO: " + service.getGpioList());
 
-        //Create Button GPIO connection.
         try {
+            //Create Button GPIO connection
             mButtonGio = service.openGpio(GREEN_LED_PIN);
+            // Configure Button as an input && Enable edge trigger events
+            mButtonGio.setDirection(Gpio.DIRECTION_IN);
+            mButtonGio.setEdgeTriggerType(Gpio.ACTIVE_LOW);
         }catch (IOException e){
             throw new IllegalStateException(mButtonGio +"error opening the button",e);
         }
